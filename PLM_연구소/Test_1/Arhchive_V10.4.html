@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEV ARCHIVE</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab {
+    padding: 12px 40px;
+    border: none;
+    background-color: #e8e8e8;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: normal;
+    color: #333;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    transition: all 0.3s ease;
+    clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
+    margin-right: 5px;
+}
+
+.tab:hover { background-color: #d5d5d5; }
+
+.tab.active {
+    background-color: #8BC34A;
+    color: white;
+    font-weight: bold;
+    border-color: #8BC34A;
+}
+
+.content-area {
+    display: none;
+    border: 2px solid #333;
+    border-top: none;
+    min-height: 600px;
+}
+
+.content-area.active { display: flex; }
+
+#archive-content { display: none; }
+#archive-content.active { display: flex; }
+#archive-content .left-panel { width: 220px; }
+#archive-content .middle-panel {
+    width: 280px;
+    border-right: 2px solid #333;
+    padding: 20px;
+    background-color: #fafafa;
+}
+#archive-content .right-panel { flex: 1; }
+
+#ongoing-content, #history-content {
+    padding: 30px;
+    background-color: white;
+}
+
+.ongoing-container, .history-container { max-width: 1200px; }
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-size: 14px;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: flex; }
+
+.panel-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #8BC34A;
+}
+
+.panel-header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header-with-button .panel-title {
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.btn-add-folder {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-add-folder:hover {
+    background-color: #8BC34A;
+    color: white;
+    transform: scale(1.1);
+}
+
+.left-panel {
+    width: 280px;
+    border-right: 2px solid #333;
+    padding: 20px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+}
+
+.year-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.year-item {
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.year-item:hover {
+    border-color: #8BC34A;
+    box-shadow: 0 2px 8px rgba(139, 195, 74, 0.2);
+    transform: translateX(3px);
+}
+
+.year-item.active {
+    border: 2px solid #8BC34A;
+    background-color: #f1f8e9;
+}
+
+.year-number {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.year-info { font-size: 13px; color: #666; }
+
+.toggle-icon {
+    display: inline-block;
+    width: 16px;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.footer-note {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    font-size: 14px;
+    color: #666;
+}
+
+.right-panel {
+    flex: 1;
+    padding: 20px 30px;
+    background-color: white;
+    overflow-y: auto;
+}
+
+.project-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.project-item-main {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.project-main-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 15px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+
+.project-main-header:hover { background-color: #e8f5e9; }
+.project-main-header.active { background-color: #8BC34A; color: white; }
+
+.project-main-name {
+    font-size: 15px;
+    font-weight: bold;
+    flex: 1;
+}
+
+.btn-edit-brand {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid #FF9800;
+    background-color: white;
+    color: #FF9800;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    opacity: 0;
+}
+
+.project-main-header:hover .btn-edit-brand { opacity: 1; }
+.btn-edit-brand:hover { background-color: #FF9800; color: white; transform: scale(1.1); }
+.project-main-header.active .btn-edit-brand { border-color: white; color: white; background-color: transparent; opacity: 1; }
+
+.btn-add-subfolder {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-add-subfolder:hover { background-color: #8BC34A; color: white; transform: scale(1.1); }
+.project-main-header.active .btn-add-subfolder { border-color: white; color: white; background-color: transparent; }
+
+.project-main-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: white;
+}
+
+.project-main-content.expanded { max-height: 500px; overflow-y: auto; }
+
+.sub-project-item {
+    padding: 10px 15px 10px 35px;
+    border-top: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.sub-project-item:hover { background-color: #f9f9f9; }
+.sub-project-item.active { background-color: #e8f5e9; border-left: 3px solid #8BC34A; }
+
+.sub-project-name { flex: 1; font-size: 14px; color: #555; }
+
+.btn-edit-subfolder {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #FF9800;
+    background-color: white;
+    color: #FF9800;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    opacity: 0;
+}
+
+.sub-project-item:hover .btn-edit-subfolder { opacity: 1; }
+.btn-edit-subfolder:hover { background-color: #FF9800; color: white; }
+
+.btn-add-product-sub {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0;
+}
+
+.sub-project-item:hover .btn-add-product-sub { opacity: 1; }
+.btn-add-product-sub:hover { background-color: #8BC34A; color: white; }
+.sub-project-item.active .btn-add-product-sub { opacity: 1; }
+
+.product-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 18px;
+    background-color: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product-list-item:hover {
+    background-color: #e8f5e9;
+    border-color: #8BC34A;
+    transform: translateX(5px);
+}
+
+.product-list-item.active {
+    background-color: #e8f5e9;
+    border-color: #8BC34A;
+    box-shadow: 0 2px 8px rgba(139, 195, 74, 0.3);
+}
+
+.product-icon { font-size: 24px; }
+.product-name-text { font-size: 15px; font-weight: 600; color: #333; flex: 1; }
+.product-list-item.active .product-name-text { color: #558B2F; }
+
+.file-count-badge {
+    background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+.btn-delete-product {
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid #f44336;
+    background-color: white;
+    color: #f44336;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    opacity: 0;
+}
+
+.product-list-item:hover .btn-delete-product { opacity: 1; }
+.btn-delete-product:hover { background-color: #f44336; color: white; }
+
+/* ===== EDIT MODAL CSS ===== */
+.edit-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.edit-modal-box {
+    background-color: white;
+    border-radius: 12px;
+    width: 420px;
+    max-width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+
+.edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    background-color: #FF9800;
+    color: white;
+}
+
+.edit-modal-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-modal-header .btn-close-edit-modal {
+    width: 28px; height: 28px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.edit-modal-header .btn-close-edit-modal:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.edit-modal-body {
+    padding: 22px;
+}
+
+.edit-modal-body label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.edit-modal-body .current-name {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border-left: 3px solid #ddd;
+}
+
+.edit-modal-body .edit-name-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #FF9800;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.edit-modal-body .edit-name-input:focus {
+    border-color: #E65100;
+    box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+}
+
+.edit-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 22px;
+    border-top: 1px solid #eee;
+    background-color: #fafafa;
+}
+
+.edit-modal-footer .btn-delete-item {
+    padding: 8px 18px;
+    border: 1.5px solid #f44336;
+    background-color: white;
+    color: #f44336;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.edit-modal-footer .btn-delete-item:hover {
+    background-color: #f44336;
+    color: white;
+}
+
+.edit-modal-footer .btn-group-right {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-modal-footer .btn-cancel-item {
+    padding: 8px 18px;
+    border: 1px solid #ddd;
+    background-color: white;
+    color: #666;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.edit-modal-footer .btn-cancel-item:hover {
+    background-color: #f5f5f5;
+}
+
+.edit-modal-footer .btn-save-item {
+    padding: 8px 22px;
+    border: none;
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.edit-modal-footer .btn-save-item:hover {
+    background: linear-gradient(135deg, #F57C00 0%, #E65100 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3);
+}
+
+/* ONGOING CSS */
+.ongoing-container { width: 100%; padding: 10px; }
+.filter-section { margin-bottom: 20px; }
+
+.filter-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.filter-group label { font-size: 13px; font-weight: 600; color: #333; }
+
+.filter-select, .filter-input {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus, .filter-input:focus { border-color: #8BC34A; }
+.filter-date { width: 150px; }
+
+.filter-input:disabled, .filter-date:disabled {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.filter-group.disabled label { color: #999; }
+.filter-group.disabled::after {
+    content: '(TBD 선택됨)';
+    font-size: 11px;
+    color: #FF9800;
+    margin-top: 2px;
+}
+
+.manager-group { min-width: 180px; }
+
+.manager-input {
+    padding: 8px 12px;
+    border: 2px solid #9C27B0;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background-color: #faf5fc;
+}
+
+.manager-input:focus {
+    border-color: #7B1FA2;
+    box-shadow: 0 0 8px rgba(156, 39, 176, 0.3);
+    background-color: white;
+}
+
+.manager-input::placeholder { color: #BA68C8; }
+.manager-group label { color: #7B1FA2; font-weight: 700; }
+.manager-group label::before { content: ' '; }
+
+.tbd-group { min-width: 100px; }
+
+.tbd-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #fff8e1;
+    border: 1px solid #FFE082;
+    border-radius: 6px;
+}
+
+.tbd-checkbox-container:hover { background-color: #ffecb3; border-color: #FFD54F; }
+.tbd-checkbox-container.active { background-color: #FF9800; border-color: #FF9800; }
+.tbd-checkbox-container.active .tbd-label { color: white; font-weight: 700; }
+
+.tbd-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: #FF9800; }
+.tbd-label { font-size: 13px; color: #F57C00; cursor: pointer; font-weight: 600; }
+
+.report-table { margin-bottom: 20px; overflow-x: auto; }
+.report-table table { width: 100%; border-collapse: collapse; }
+.report-table th, .report-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+.report-table th { background-color: #f5f5f5; font-weight: 600; font-size: 13px; }
+
+.report-table .table-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.report-table .table-input:focus { border-color: #8BC34A; }
+
+.doc-upload-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-upload-doc-table {
+    padding: 5px 12px;
+    border: 1px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.btn-upload-doc-table:hover { background-color: #8BC34A; color: white; }
+.btn-upload-doc-table.uploaded { background-color: #e8f5e9; border-color: #4CAF50; color: #4CAF50; }
+
+.btn-upload-doc-table:disabled {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.btn-upload-doc-table:disabled:hover { background-color: #f0f0f0; color: #999; }
+
+.doc-file-name {
+    font-size: 12px;
+    color: #666;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.btn-delete-doc-table {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #f44336;
+    background-color: white;
+    color: #f44336;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-delete-doc-table:hover { background-color: #f44336; color: white; }
+
+.doc-type-select {
+    padding: 5px 8px;
+    border: 2px solid #2196F3;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    background-color: #E3F2FD;
+    color: #1565C0;
+    min-width: 80px;
+}
+
+.doc-type-select:hover { background-color: #BBDEFB; border-color: #1976D2; }
+.doc-type-select:focus { border-color: #1565C0; box-shadow: 0 0 6px rgba(33, 150, 243, 0.4); }
+.doc-type-select.type-status { border-color: #FF9800; background-color: #FFF3E0; color: #E65100; }
+.doc-type-select.type-go { border-color: #4CAF50; background-color: #E8F5E9; color: #2E7D32; }
+
+.bottom-section { display: flex; gap: 30px; margin-bottom: 20px; }
+
+.decision-section, .holding-section {
+    flex: 1;
+    padding: 15px;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.decision-section.disabled { background-color: #f5f5f5; border-color: #e0e0e0; opacity: 0.7; }
+.decision-section.disabled label { color: #999; }
+.decision-section.disabled .decision-input { background-color: #f0f0f0; border-color: #ccc; color: #999; cursor: not-allowed; }
+
+.decision-section .disabled-message {
+    display: none;
+    font-size: 11px;
+    color: #FF9800;
+    margin-top: 8px;
+    padding: 6px 10px;
+    background-color: #FFF3E0;
+    border: 1px solid #FFE082;
+    border-radius: 4px;
+}
+
+.decision-section.disabled .disabled-message { display: block; }
+
+.decision-section label, .holding-section > label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.decision-row, .holding-row { display: flex; align-items: center; gap: 10px; }
+.decision-row span, .holding-row span { font-size: 13px; color: #666; }
+
+.decision-input {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.decision-input:focus { border-color: #8BC34A; }
+.decision-input:disabled { background-color: #f0f0f0; border-color: #ccc; color: #999; cursor: not-allowed; }
+
+/* ===== HOLDING SECTION - 체크박스 토글 스타일 ===== */
+.holding-section {
+    transition: all 0.3s ease;
+}
+
+.holding-section.disabled-holding {
+    background-color: #f5f5f5;
+    border-color: #e0e0e0;
+}
+
+.holding-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.holding-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background-color: #fce4ec;
+    border: 2px solid #ef9a9a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.holding-checkbox-container:hover {
+    background-color: #ffcdd2;
+    border-color: #e57373;
+    transform: scale(1.02);
+}
+
+.holding-checkbox-container.active {
+    background-color: #f44336;
+    border-color: #d32f2f;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.holding-checkbox-container.active .holding-check-label {
+    color: white;
+    font-weight: 700;
+}
+
+.holding-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #f44336;
+}
+
+.holding-check-label {
+    font-size: 14px;
+    color: #c62828;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.holding-status-text {
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+    transition: all 0.3s ease;
+}
+
+.holding-status-text.active-text {
+    color: #f44336;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.holding-detail-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    background-color: #fff5f5;
+    border: 1px dashed #ef9a9a;
+    border-radius: 6px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+    padding: 0 15px;
+}
+
+.holding-detail-area.expanded {
+    max-height: 200px;
+    opacity: 1;
+    padding: 15px;
+}
+
+.holding-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.holding-detail-row label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #c62828;
+    min-width: 50px;
+    margin-bottom: 0;
+}
+
+.holding-select {
+    padding: 8px 12px;
+    border: 2px solid #ef9a9a;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    min-width: 130px;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.holding-select:focus {
+    border-color: #f44336;
+    box-shadow: 0 0 6px rgba(244, 67, 54, 0.3);
+}
+
+.holding-select:disabled {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.holding-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #ef9a9a;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.holding-input:focus {
+    border-color: #f44336;
+    box-shadow: 0 0 6px rgba(244, 67, 54, 0.3);
+}
+
+.holding-input:disabled {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.holding-disabled-message {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    padding: 10px;
+}
+
+.save-section { display: flex; justify-content: flex-end; gap: 10px; }
+
+.btn-save {
+    padding: 10px 40px;
+    background-color: #8BC34A;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save:hover { background-color: #7CB342; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139, 195, 74, 0.4); }
+
+/* MODAL CSS */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background-color: #8BC34A;
+    color: white;
+}
+
+.modal-header h3 { font-size: 18px; font-weight: 600; }
+
+.signature-label {
+    font-size: 12px;
+    padding: 4px 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    margin-left: auto;
+    margin-right: 15px;
+}
+
+.btn-close-modal {
+    width: 32px; height: 32px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-close-modal:hover { background-color: rgba(255, 255, 255, 0.3); }
+
+.modal-body {
+    padding: 20px 25px;
+    max-height: calc(85vh - 80px);
+    overflow-y: auto;
+}
+
+.modal-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.modal-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.released-file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    background-color: #e3f2fd;
+    border: 1px solid #90CAF9;
+    border-left: 4px solid #2196F3;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.released-file-item .file-icon { font-size: 20px; }
+.released-file-item .file-details { flex: 1; }
+.released-file-item .file-title { font-size: 14px; font-weight: 600; color: #1565C0; margin-bottom: 2px; }
+.released-file-item .file-meta { font-size: 11px; color: #666; display: flex; gap: 10px; }
+
+.released-file-item .btn-download {
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.released-file-item .btn-download:hover { background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); }
+
+/* HISTORY CSS */
+.history-container { padding: 20px; width: 100%; }
+
+.history-table {
+    margin-top: 20px;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#history-records { width: 100%; border-collapse: collapse; min-width: 1800px; }
+
+#history-records thead {
+    background-color: #8BC34A;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#history-records th {
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid #7CB342;
+    white-space: nowrap;
+}
+
+#history-records th.manager-col { background-color: #7B1FA2; border-color: #6A1B9A; }
+#history-records th.doc-type-col { background-color: #2196F3; border-color: #1976D2; }
+#history-records th.holding-col { background-color: #f44336; border-color: #d32f2f; }
+#history-records td.manager-cell { background-color: #faf5fc; color: #7B1FA2; font-weight: 600; }
+#history-records td.doc-type-cell { font-weight: 600; text-align: center; }
+#history-records td.doc-type-cell.type-status { background-color: #FFF3E0; color: #E65100; }
+#history-records td.doc-type-cell.type-go { background-color: #E8F5E9; color: #2E7D32; }
+#history-records td.holding-active-cell { background-color: #ffebee; color: #c62828; font-weight: 600; }
+
+.doc-type-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.doc-type-badge.status { background-color: #FF9800; color: white; }
+.doc-type-badge.go { background-color: #4CAF50; color: white; }
+
+.holding-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.holding-badge.holding-on { background-color: #f44336; color: white; }
+.holding-badge.holding-off { background-color: #e0e0e0; color: #999; }
+
+#history-records tbody tr:not(.empty-row):hover { background-color: #f5f5f5; }
+#history-records tbody tr:nth-child(even):not(.empty-row) { background-color: #fafafa; }
+
+#history-records td {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    font-size: 13px;
+    color: #333;
+}
+
+#history-records td:first-child { text-align: center; font-weight: 600; color: #8BC34A; }
+
+.doc-link { color: #2196F3; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+.doc-link:hover { text-decoration: underline; }
+
+.btn-delete-history {
+    padding: 6px 12px;
+    border: 1px solid #f44336;
+    background-color: white;
+    color: #f44336;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-delete-history:hover { background-color: #f44336; color: white; }
+
+.export-section { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+
+.btn-export {
+    padding: 10px 24px;
+    border: 1px solid #4CAF50;
+    background-color: white;
+    color: #4CAF50;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-export:hover { background-color: #4CAF50; color: white; transform: translateY(-2px); }
+
+.btn-delete-all {
+    padding: 10px 24px;
+    border: 1px solid #f44336;
+    background-color: white;
+    color: #f44336;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-delete-all:hover { background-color: #f44336; color: white; }
+
+.btn-release {
+    padding: 6px 16px;
+    border: 2px solid #2196F3;
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-release:hover { background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); transform: translateY(-2px); }
+.btn-release.released { background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); border-color: #4CAF50; cursor: default; opacity: 0.7; }
+.btn-release.released:hover { transform: none; }
+
+.btn-add-row {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-add-row:hover { background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%); transform: translateY(-1px); }
+
+.btn-delete-row {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-delete-row:hover { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); }
+
+.add-row-container { text-align: center; padding: 15px 0; border-top: 1px dashed #ddd; margin-top: 10px; }
+
+.btn-edit-history {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-edit-history:hover { background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); }
+
+.btn-update {
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.btn-update:hover { background: linear-gradient(135deg, #F57C00 0%, #E65100 100%); transform: translateY(-2px); }
+
+.btn-cancel-edit {
+    background: linear-gradient(135deg, #9E9E9E 0%, #757575 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.btn-cancel-edit:hover { background: linear-gradient(135deg, #757575 0%, #616161 100%); }
+
+.edit-mode-indicator {
+    background: #FFF3E0;
+    border: 2px solid #FF9800;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-mode-indicator .icon { font-size: 20px; }
+.edit-mode-indicator .text { color: #E65100; font-weight: 600; font-size: 14px; }
+
+.save-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.save-indicator.show { opacity: 1; }
+
+.btn-clear-storage {
+    padding: 10px 24px;
+    border: 1px solid #FF5722;
+    background-color: white;
+    color: #FF5722;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-clear-storage:hover { background-color: #FF5722; color: white; }
+
+@media (max-width: 768px) {
+    .content-area, .left-panel { flex-direction: column; width: 100%; }
+    .filter-row, .bottom-section { flex-direction: column; }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title" id="page-title">I. CODEV ARCHIVE</h1>
+        <div class="tabs">
+            <button class="tab active" data-tab="archive">ARCHIVE</button>
+            <button class="tab" data-tab="ongoing">Ongoing Projects</button>
+            <button class="tab" data-tab="history">History</button>
+        </div>
+
+        <!-- ===== ARCHIVE TAB ===== -->
+        <div class="content-area tab-content active" id="archive-content">
+            <div class="left-panel">
+                <div class="panel-header-with-button">
+                    <h3 class="panel-title">연도</h3>
+                    <button class="btn-add-folder" id="btn-add-year" title="연도 추가"><span>+</span></button>
+                </div>
+                <div class="year-list" id="year-list"></div>
+                <div class="footer-note">연도를 선택하세요</div>
+            </div>
+            <div class="middle-panel">
+                <div class="panel-header-with-button">
+                    <h3 class="panel-title">브랜드</h3>
+                    <button class="btn-add-folder" id="btn-add-brand" title="브랜드 추가"><span>+</span></button>
+                </div>
+                <div class="project-tree" id="project-tree"></div>
+            </div>
+            <div class="right-panel">
+                <h3 class="panel-title">제품 목록</h3>
+                <div class="product-detail" id="product-detail"><p class="empty-message">브랜드를 선택하세요</p></div>
+            </div>
+        </div>
+
+        <!-- ===== ONGOING TAB ===== -->
+        <div class="content-area tab-content" id="ongoing-content">
+            <div class="ongoing-container">
+                <h3 class="panel-title">프로젝트 정보 입력</h3>
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>브랜드</label>
+                            <select class="filter-select" id="ongoing-brand">
+                                <option value="">선택</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>제품</label>
+                            <input type="text" class="filter-input" id="ongoing-product">
+                        </div>
+                        <div class="filter-group">
+                            <label>프로젝트명</label>
+                            <input type="text" class="filter-input" id="ongoing-project">
+                        </div>
+                        <div class="filter-group">
+                            <label>Gate</label>
+                            <select class="filter-select" id="ongoing-gate">
+                                <option value="">선택</option>
+                                <option value="Go Define">Go Define</option>
+                                <option value="Go Develop">Go Develop</option>
+                                <option value="Go Implement">Go Implement</option>
+                                <option value="Go Launch">Go Launch</option>
+                                <option value="Closure">Closure</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" id="year-group">
+                            <label>일정</label>
+                            <input type="date" class="filter-input filter-date" id="ongoing-year">
+                        </div>
+                        <div class="filter-group tbd-group">
+                            <label>TBD</label>
+                            <div class="tbd-checkbox-container" id="tbd-container">
+                                <input type="checkbox" id="ongoing-tbd" class="tbd-checkbox">
+                                <label for="ongoing-tbd" class="tbd-label">미정</label>
+                            </div>
+                        </div>
+                        <div class="filter-group manager-group">
+                            <label>담당자</label>
+                            <input type="text" class="filter-input manager-input" id="ongoing-manager" placeholder="담당자 입력">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>날짜</th>
+                                <th>문서</th>
+                                <th>유형</th>
+                                <th>비고</th>
+                                <th style="width:50px;">삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body">
+                            <tr>
+                                <td><input type="date" class="table-input"></td>
+                                <td><div class="doc-upload-cell"><button class="btn-upload-doc-table">파일 선택</button><span class="doc-file-name"></span><button class="btn-delete-doc-table" style="display:none;">×</button></div></td>
+                                <td><select class="doc-type-select"><option value="">선택</option><option value="Status">Status</option><option value="Go">Go</option></select></td>
+                                <td><input type="text" class="table-input" placeholder="회의 메모"></td>
+                                <td><button class="btn-delete-row" onclick="deleteReportRow(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="add-row-container"><button class="btn-add-row" onclick="addReportRow()">+ 행 추가</button></div>
+                </div>
+
+                <div class="bottom-section">
+                    <div class="decision-section disabled" id="decision-section">
+                        <label>REQUEST DECISION</label>
+                        <div class="decision-row">
+                            <span>서명일</span>
+                            <input type="date" class="decision-input" id="decision-date" disabled>
+                            <div class="doc-upload-cell" id="decision-upload-cell">
+                                <button class="btn-upload-doc-table" id="decision-upload-btn" disabled>파일 선택</button>
+                                <span class="doc-file-name"></span>
+                                <button class="btn-delete-doc-table" style="display:none;">×</button>
+                            </div>
+                        </div>
+                        <div class="disabled-message">문서 유형에서 "Go"를 선택해야 활성화됩니다.</div>
+                    </div>
+
+                    <!-- ★ PROJECT HOLDING - 체크박스 토글 방식 -->
+                    <div class="holding-section disabled-holding" id="holding-section">
+                        <label>PROJECT HOLDING</label>
+                        <div class="holding-toggle-row">
+                            <div class="holding-checkbox-container" id="holding-checkbox-container">
+                                <input type="checkbox" id="holding-toggle" class="holding-checkbox">
+                                <label for="holding-toggle" class="holding-check-label">보류 적용</label>
+                            </div>
+                            <span class="holding-status-text" id="holding-status-text">체크하면 보류 사유를 입력할 수 있습니다</span>
+                        </div>
+                        <div class="holding-detail-area" id="holding-detail-area">
+                            <div class="holding-detail-row">
+                                <label>상태</label>
+                                <select class="holding-select" id="holding-select" disabled>
+                                    <option value="">선택</option>
+                                    <option value="보류">보류</option>
+                                    <option value="중단">중단</option>
+                                    <option value="대기">대기</option>
+                                    <option value="재검토">재검토</option>
+                                </select>
+                            </div>
+                            <div class="holding-detail-row">
+                                <label>사유</label>
+                                <input type="text" class="holding-input" id="holding-reason" placeholder="보류/중단 사유를 입력하세요..." disabled>
+                            </div>
+                        </div>
+                        <div class="holding-disabled-message" id="holding-disabled-msg">체크박스를 선택하여 보류 정보를 입력하세요</div>
+                    </div>
+                </div>
+
+                <div class="save-section">
+                    <button class="btn-save" id="btn-save">저장</button>
+                    <button class="btn-update" id="btn-update" style="display:none;">수정</button>
+                    <button class="btn-cancel-edit" id="btn-cancel-edit" style="display:none;">취소</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== HISTORY TAB ===== -->
+        <div class="content-area tab-content" id="history-content">
+            <div class="history-container">
+                <h3 class="panel-title">History</h3>
+                <div class="history-table">
+                    <table id="history-records">
+                        <thead>
+                            <tr>
+                                <th>번호</th><th>브랜드</th><th>제품</th><th>프로젝트명</th>
+                                <th class="manager-col">담당자</th><th>Gate</th><th>일정</th><th>TBD</th>
+                                <th>날짜</th><th>문서</th><th class="doc-type-col">유형</th><th>비고</th>
+                                <th>서명일</th><th class="holding-col">보류</th><th>보류 상태</th><th>보류 사유</th><th>릴리즈</th><th>편집</th><th>삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <tr class="empty-row"><td colspan="19" style="text-align:center;padding:40px;color:#999;">데이터 없음</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="export-section">
+                    <button class="btn-clear-storage" id="btn-clear-storage"><span>🗑</span> 저장소 초기화</button>
+                    <button class="btn-delete-all" id="btn-delete-all"><span>🗑</span> 전체 삭제</button>
+                    <button class="btn-export" id="btn-export-excel"><span>📊</span> Excel 내보내기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-indicator" id="save-indicator">저장 완료!</div>
+
+<script>
+// ============================================
+//  저장/불러오기 (LocalStorage)
+// ============================================
+
+const STORAGE_KEYS = {
+    PROJECT_DATA: 'codev_projectData',
+    HISTORY_RECORDS: 'codev_historyRecords',
+    RELEASED_FILES: 'codev_releasedProductFiles'
+};
+
+const defaultProjectData = {
+    '2022': { projects: [{ name: 'ACTIVIA', subProjects: [], products: { '_direct': [] } }] },
+    '2023': { projects: [{ name: '브랜드A', subProjects: ['라인1', '라인2', '라인3'], products: { '_direct': [], '라인1': [], '라인2': [], '라인3': [] } }] },
+    '2024': { projects: [{ name: '브랜드B', subProjects: ['라인1', '라인2', '라인3'], products: { '_direct': [], '라인1': [], '라인2': [], '라인3': [] } }] },
+    '2025': { projects: [{ name: '브랜드C', subProjects: ['라인1', '라인2', '라인3'], products: { '_direct': [], '라인1': [], '라인2': [], '라인3': [] } }] }
+};
+
+function saveToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEYS.PROJECT_DATA, JSON.stringify(projectData));
+        localStorage.setItem(STORAGE_KEYS.HISTORY_RECORDS, JSON.stringify(historyRecords));
+        localStorage.setItem(STORAGE_KEYS.RELEASED_FILES, JSON.stringify(releasedProductFiles));
+        showSaveIndicator();
+    } catch (e) {
+        console.error('저장 오류:', e);
+        alert('저장에 실패했습니다.');
+    }
+}
+
+function loadFromStorage() {
+    try {
+        const savedProjectData = localStorage.getItem(STORAGE_KEYS.PROJECT_DATA);
+        const savedHistoryRecords = localStorage.getItem(STORAGE_KEYS.HISTORY_RECORDS);
+        const savedReleasedFiles = localStorage.getItem(STORAGE_KEYS.RELEASED_FILES);
+
+        if (savedProjectData) {
+            const parsed = JSON.parse(savedProjectData);
+            Object.keys(projectData).forEach(key => delete projectData[key]);
+            Object.assign(projectData, parsed);
+        }
+        if (savedHistoryRecords) {
+            historyRecords.length = 0;
+            historyRecords.push(...JSON.parse(savedHistoryRecords));
+        }
+        if (savedReleasedFiles) {
+            Object.keys(releasedProductFiles).forEach(key => delete releasedProductFiles[key]);
+            Object.assign(releasedProductFiles, JSON.parse(savedReleasedFiles));
+        }
+    } catch (e) {
+        console.error('불러오기 오류:', e);
+    }
+}
+
+function clearStorage() {
+    if (confirm('모든 저장 데이터를 초기화하시겠습니까?\n기본 데이터로 복원됩니다.')) {
+        localStorage.removeItem(STORAGE_KEYS.PROJECT_DATA);
+        localStorage.removeItem(STORAGE_KEYS.HISTORY_RECORDS);
+        localStorage.removeItem(STORAGE_KEYS.RELEASED_FILES);
+        alert('초기화 완료. 페이지를 새로고침합니다.');
+        location.reload();
+    }
+}
+
+function showSaveIndicator() {
+    const indicator = document.getElementById('save-indicator');
+    if (indicator) {
+        indicator.classList.add('show');
+        setTimeout(() => indicator.classList.remove('show'), 2000);
+    }
+}
+
+// ============================================
+//  전역 데이터
+// ============================================
+
+let projectData = JSON.parse(JSON.stringify(defaultProjectData));
+let releasedProductFiles = {};
+let currentSelectedBrand = null, currentSelectedYear = null, currentSelectedSubProject = null;
+let historyRecords = [];
+let editingRecordId = null;
+
+// ============================================
+//  브랜드/서브폴더 수정 모달
+// ============================================
+
+function showEditModal(options) {
+    const existing = document.getElementById('edit-item-modal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'edit-item-modal';
+    overlay.className = 'edit-modal-overlay';
+
+    overlay.innerHTML = `
+        <div class="edit-modal-box">
+            <div class="edit-modal-header">
+                <h3>✏️ ${options.title}</h3>
+                <button class="btn-close-edit-modal">×</button>
+            </div>
+            <div class="edit-modal-body">
+                <label>현재 이름</label>
+                <div class="current-name">${options.currentName}</div>
+                <label>새 이름</label>
+                <input type="text" class="edit-name-input" id="edit-name-input" value="${options.currentName}" autofocus>
+            </div>
+            <div class="edit-modal-footer">
+                <button class="btn-delete-item">🗑 ${options.deleteLabel || '삭제'}</button>
+                <div class="btn-group-right">
+                    <button class="btn-cancel-item">취소</button>
+                    <button class="btn-save-item">✔ 저장</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+        const input = document.getElementById('edit-name-input');
+        if (input) { input.focus(); input.select(); }
+    }, 100);
+
+    const closeModal = () => overlay.remove();
+
+    overlay.querySelector('.btn-close-edit-modal').addEventListener('click', closeModal);
+    overlay.querySelector('.btn-cancel-item').addEventListener('click', closeModal);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
+
+    const input = overlay.querySelector('#edit-name-input');
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); overlay.querySelector('.btn-save-item').click(); }
+        if (e.key === 'Escape') closeModal();
+    });
+
+    overlay.querySelector('.btn-save-item').addEventListener('click', function() {
+        const newName = input.value.trim();
+        if (!newName) { alert('이름을 입력해주세요.'); input.focus(); return; }
+        if (newName === options.currentName) { closeModal(); return; }
+        const result = options.onSave(newName);
+        if (result !== false) closeModal();
+    });
+
+    overlay.querySelector('.btn-delete-item').addEventListener('click', function() {
+        if (options.onDelete) {
+            const result = options.onDelete();
+            if (result !== false) closeModal();
+        }
+    });
+}
+
+function editBrand(brandName) {
+    const year = currentSelectedYear;
+    if (!year || !projectData[year]) return;
+    const brandIndex = projectData[year].projects.findIndex(p => p.name === brandName);
+    if (brandIndex === -1) return;
+
+    showEditModal({
+        title: '브랜드 수정',
+        currentName: brandName,
+        deleteLabel: '브랜드 삭제',
+        onSave: function(newName) {
+            const exists = projectData[year].projects.some((p, i) => i !== brandIndex && p.name === newName);
+            if (exists) { alert('이미 동일한 이름의 브랜드가 존재합니다.'); return false; }
+            const oldName = projectData[year].projects[brandIndex].name;
+            projectData[year].projects[brandIndex].name = newName;
+            Object.values(releasedProductFiles).forEach(file => {
+                if (file.projectInfo && file.projectInfo.brand === oldName) file.projectInfo.brand = newName;
+            });
+            historyRecords.forEach(rec => { if (rec.brand === oldName) rec.brand = newName; });
+            loadProjectsForYear(year);
+            updateBrandOptions();
+            updateHistoryTable();
+            saveToStorage();
+        },
+        onDelete: function() {
+            if (confirm(`"${brandName}" 브랜드를 삭제하시겠습니까?\n하위 서브폴더와 제품도 모두 삭제됩니다.`)) {
+                projectData[year].projects.splice(brandIndex, 1);
+                loadProjectsForYear(year);
+                updateBrandOptions();
+                saveToStorage();
+                if (currentSelectedBrand === brandName) {
+                    currentSelectedBrand = null;
+                    currentSelectedSubProject = null;
+                    const detail = document.getElementById('product-detail');
+                    if (detail) detail.innerHTML = '<p class="empty-message">브랜드를 선택하세요</p>';
+                }
+            } else { return false; }
+        }
+    });
+}
+
+function editSubfolder(brandName, subName) {
+    const year = currentSelectedYear;
+    if (!year || !projectData[year]) return;
+    const brand = projectData[year].projects.find(p => p.name === brandName);
+    if (!brand) return;
+    const subIndex = brand.subProjects.indexOf(subName);
+    if (subIndex === -1) return;
+
+    showEditModal({
+        title: '서브폴더 수정',
+        currentName: subName,
+        deleteLabel: '서브폴더 삭제',
+        onSave: function(newName) {
+            if (brand.subProjects.some((s, i) => i !== subIndex && s === newName)) {
+                alert('이미 동일한 이름의 서브폴더가 존재합니다.'); return false;
+            }
+            brand.subProjects[subIndex] = newName;
+            if (brand.products && brand.products[subName] !== undefined) {
+                brand.products[newName] = brand.products[subName];
+                delete brand.products[subName];
+            }
+            loadProjectsForYear(year);
+            saveToStorage();
+            if (currentSelectedSubProject === subName) currentSelectedSubProject = newName;
+        },
+        onDelete: function() {
+            if (confirm(`"${subName}" 서브폴더를 삭제하시겠습니까?\n하위 제품도 모두 삭제됩니다.`)) {
+                brand.subProjects.splice(subIndex, 1);
+                if (brand.products) delete brand.products[subName];
+                loadProjectsForYear(year);
+                saveToStorage();
+                if (currentSelectedSubProject === subName) {
+                    currentSelectedSubProject = null;
+                    const detail = document.getElementById('product-detail');
+                    if (detail) detail.innerHTML = '<p class="empty-message">서브폴더를 선택하세요</p>';
+                }
+            } else { return false; }
+        }
+    });
+}
+
+// ============================================
+//  ★ HOLDING 체크박스 토글 기능
+// ============================================
+
+function initHoldingToggle() {
+    const checkbox = document.getElementById('holding-toggle');
+    const container = document.getElementById('holding-checkbox-container');
+    
+    if (checkbox) {
+        checkbox.addEventListener('change', function() {
+            toggleHoldingSection(this.checked);
+        });
+    }
+    
+    // 컨테이너 클릭 시에도 토글 (체크박스 영역 외 클릭)
+    if (container) {
+        container.addEventListener('click', function(e) {
+            if (e.target !== checkbox && e.target.getAttribute('for') !== 'holding-toggle') {
+                checkbox.checked = !checkbox.checked;
+                toggleHoldingSection(checkbox.checked);
+            }
+        });
+    }
+}
+
+function toggleHoldingSection(isActive) {
+    const container = document.getElementById('holding-checkbox-container');
+    const section = document.getElementById('holding-section');
+    const detailArea = document.getElementById('holding-detail-area');
+    const statusText = document.getElementById('holding-status-text');
+    const disabledMsg = document.getElementById('holding-disabled-msg');
+    const holdSelect = document.getElementById('holding-select');
+    const holdInput = document.getElementById('holding-reason');
+    
+    if (isActive) {
+        // 활성화
+        container.classList.add('active');
+        section.classList.remove('disabled-holding');
+        detailArea.classList.add('expanded');
+        statusText.textContent = '⚠️ 보류 모드 활성화됨';
+        statusText.classList.add('active-text');
+        if (disabledMsg) disabledMsg.style.display = 'none';
+        if (holdSelect) holdSelect.disabled = false;
+        if (holdInput) holdInput.disabled = false;
+        
+        // 상태 셀렉트에 포커스
+        setTimeout(() => { if (holdSelect) holdSelect.focus(); }, 300);
+    } else {
+        // 비활성화
+        container.classList.remove('active');
+        section.classList.add('disabled-holding');
+        detailArea.classList.remove('expanded');
+        statusText.textContent = '체크하면 보류 사유를 입력할 수 있습니다';
+        statusText.classList.remove('active-text');
+        if (disabledMsg) disabledMsg.style.display = 'block';
+        if (holdSelect) { holdSelect.disabled = true; holdSelect.value = ''; }
+        if (holdInput) { holdInput.disabled = true; holdInput.value = ''; }
+    }
+}
+
+// ============================================
+//  초기화
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadFromStorage();
+    
+    initTabs();
+    initYearListUI();
+    initAddBrandButton();
+    initAddYearButton();
+    initOngoingTableUpload();
+    initSaveButton();
+    initExportButton();
+    initDeleteAllButton();
+    initClearStorageButton();
+    initTBDToggle();
+    initDocTypeSelectChange();
+    initEditButtons();
+    initHoldingToggle();
+    checkDecisionSectionStatus();
+    updateHistoryTable();
+    updateBrandOptions();
+});
+
+function initClearStorageButton() {
+    const btn = document.getElementById('btn-clear-storage');
+    if (btn) btn.addEventListener('click', clearStorage);
+}
+
+function updateBrandOptions() {
+    const select = document.getElementById('ongoing-brand');
+    if (!select) return;
+    while (select.options.length > 1) select.remove(1);
+    const brands = new Set();
+    Object.values(projectData).forEach(yearData => {
+        if (yearData.projects) yearData.projects.forEach(project => brands.add(project.name));
+    });
+    brands.forEach(brand => {
+        const option = document.createElement('option');
+        option.value = brand;
+        option.textContent = brand;
+        select.appendChild(option);
+    });
+}
+
+function initYearListUI() {
+    const yearList = document.getElementById('year-list');
+    if (!yearList) return;
+    yearList.innerHTML = '';
+    const years = Object.keys(projectData).sort();
+    years.forEach((year, index) => {
+        const item = document.createElement('div');
+        item.className = 'year-item' + (index === 0 ? ' active' : '');
+        item.setAttribute('data-year', year);
+        item.innerHTML = `<span class="year-number">${year}</span>`;
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.year-item').forEach(y => y.classList.remove('active'));
+            this.classList.add('active');
+            loadProjectsForYear(year);
+        });
+        yearList.appendChild(item);
+    });
+    if (years.length > 0) loadProjectsForYear(years[0]);
+}
+
+function checkDecisionSectionStatus() {
+    const rows = document.querySelectorAll('#report-table-body tr');
+    let hasGo = false;
+    rows.forEach(row => {
+        const sel = row.querySelector('.doc-type-select');
+        if (sel && sel.value === 'Go') hasGo = true;
+    });
+    const section = document.getElementById('decision-section');
+    const dateInput = document.getElementById('decision-date');
+    const uploadBtn = document.getElementById('decision-upload-btn');
+    if (hasGo) {
+        section.classList.remove('disabled');
+        if (dateInput) dateInput.disabled = false;
+        if (uploadBtn) uploadBtn.disabled = false;
+    } else {
+        section.classList.add('disabled');
+        if (dateInput) dateInput.disabled = true;
+        if (uploadBtn) uploadBtn.disabled = true;
+    }
+}
+
+function initDocTypeSelectChange() {
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('doc-type-select')) {
+            updateDocTypeSelectStyle(e.target);
+            checkDecisionSectionStatus();
+        }
+    });
+}
+
+function updateDocTypeSelectStyle(sel) {
+    sel.classList.remove('type-status', 'type-go');
+    if (sel.value === 'Status') sel.classList.add('type-status');
+    else if (sel.value === 'Go') sel.classList.add('type-go');
+}
+
+function initTBDToggle() {
+    const cb = document.getElementById('ongoing-tbd');
+    if (cb) cb.addEventListener('change', function() { toggleYearInput(this.checked); });
+}
+
+function toggleYearInput(checked) {
+    const inp = document.getElementById('ongoing-year');
+    const grp = document.getElementById('year-group');
+    const cont = document.getElementById('tbd-container');
+    if (checked) {
+        if (inp) { inp.disabled = true; inp.value = ''; }
+        if (grp) grp.classList.add('disabled');
+        if (cont) cont.classList.add('active');
+    } else {
+        if (inp) inp.disabled = false;
+        if (grp) grp.classList.remove('disabled');
+        if (cont) cont.classList.remove('active');
+    }
+}
+
+function initTabs() {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    const title = document.getElementById('page-title');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            const name = this.getAttribute('data-tab');
+            const content = document.getElementById(name + '-content');
+            if (content) content.classList.add('active');
+            if (title) {
+                if (name === 'archive') title.textContent = 'I. CODEV ARCHIVE';
+                else if (name === 'ongoing') title.textContent = 'II. Ongoing Projects';
+                else if (name === 'history') title.textContent = 'III. History';
+            }
+            if (name === 'ongoing') updateBrandOptions();
+        });
+    });
+}
+
+function initAddYearButton() {
+    const btn = document.getElementById('btn-add-year');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            const yr = prompt('추가할 연도 (예: 2026):');
+            if (yr && /^\d{4}$/.test(yr.trim())) {
+                if (projectData[yr.trim()]) { alert('이미 존재합니다.'); return; }
+                projectData[yr.trim()] = { projects: [] };
+                initYearListUI();
+                saveToStorage();
+            } else if (yr) {
+                alert('올바른 연도를 입력하세요. (예: 2026)');
+            }
+        });
+    }
+}
+
+function initAddBrandButton() {
+    const btn = document.getElementById('btn-add-brand');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            const name = prompt('브랜드 이름:');
+            if (name && name.trim()) {
+                const active = document.querySelector('.year-item.active');
+                if (!active) { alert('연도를 선택하세요.'); return; }
+                const year = active.getAttribute('data-year');
+                if (!projectData[year]) projectData[year] = { projects: [] };
+                const exists = projectData[year].projects.some(p => p.name === name.trim());
+                if (exists) { alert('이미 존재하는 브랜드입니다.'); return; }
+                projectData[year].projects.push({ name: name.trim(), subProjects: [], products: { '_direct': [] } });
+                loadProjectsForYear(year);
+                updateBrandOptions();
+                saveToStorage();
+            }
+        });
+    }
+}
+
+function loadProjectsForYear(year) {
+    currentSelectedYear = year;
+    const tree = document.getElementById('project-tree');
+    if (!tree) return;
+    tree.innerHTML = '';
+    const data = projectData[year];
+    if (data && data.projects) data.projects.forEach(p => tree.appendChild(createProjectItem(p)));
+    const detail = document.getElementById('product-detail');
+    if (detail) detail.innerHTML = '<p class="empty-message">브랜드를 선택하세요</p>';
+}
+
+function createProjectItem(project) {
+    const div = document.createElement('div');
+    div.className = 'project-item-main';
+    const header = document.createElement('div');
+    header.className = 'project-main-header';
+    
+    if (project.subProjects && project.subProjects.length > 0) {
+        header.innerHTML = `<span class="toggle-icon">▶</span><span class="project-main-name">${project.name}</span><button class="btn-edit-brand" title="브랜드 수정">✏</button><button class="btn-add-subfolder" title="서브폴더 추가">+</button>`;
+        const content = document.createElement('div');
+        content.className = 'project-main-content';
+        
+        project.subProjects.forEach(sub => {
+            const subItem = document.createElement('div');
+            subItem.className = 'sub-project-item';
+            subItem.innerHTML = `<span class="sub-project-name">${sub}</span><button class="btn-edit-subfolder" title="서브폴더 수정">✏</button><button class="btn-add-product-sub" title="제품 추가">+</button>`;
+            
+            subItem.querySelector('.sub-project-name').addEventListener('click', function(e) {
+                e.stopPropagation();
+                selectSubProject(sub, subItem, project.name);
+            });
+            subItem.querySelector('.btn-edit-subfolder').addEventListener('click', function(e) {
+                e.stopPropagation();
+                editSubfolder(project.name, sub);
+            });
+            subItem.querySelector('.btn-add-product-sub').addEventListener('click', function(e) {
+                e.stopPropagation();
+                addProductToSubProject(project.name, sub);
+            });
+            content.appendChild(subItem);
+        });
+        
+        header.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-add-subfolder') || e.target.closest('.btn-edit-brand')) return;
+            const icon = header.querySelector('.toggle-icon');
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                if (icon) icon.textContent = '▶';
+                header.classList.remove('active');
+            } else {
+                content.classList.add('expanded');
+                if (icon) icon.textContent = '▼';
+                header.classList.add('active');
+                currentSelectedBrand = project.name;
+                currentSelectedSubProject = '_direct';
+                loadProductsForBrand(project.name);
+            }
+        });
+        
+        div.appendChild(header);
+        div.appendChild(content);
+    } else {
+        header.innerHTML = `<span class="project-main-name">${project.name}</span><button class="btn-edit-brand" title="브랜드 수정">✏</button><button class="btn-add-subfolder" title="서브폴더 추가">+</button>`;
+        header.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-add-subfolder') || e.target.closest('.btn-edit-brand')) return;
+            document.querySelectorAll('.project-main-header').forEach(h => h.classList.remove('active'));
+            header.classList.add('active');
+            currentSelectedBrand = project.name;
+            currentSelectedSubProject = '_direct';
+            loadProductsForBrand(project.name);
+        });
+        div.appendChild(header);
+    }
+    
+    header.querySelector('.btn-edit-brand').addEventListener('click', function(e) {
+        e.stopPropagation();
+        editBrand(project.name);
+    });
+    header.querySelector('.btn-add-subfolder').addEventListener('click', function(e) {
+        e.stopPropagation();
+        addSubfolder(project);
+    });
+    
+    return div;
+}
+
+function selectSubProject(subName, element, brandName) {
+    document.querySelectorAll('.project-main-header, .sub-project-item').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+    currentSelectedBrand = brandName;
+    currentSelectedSubProject = subName;
+    loadProductsForSubProject(brandName, subName);
+}
+
+function addSubfolder(project) {
+    const name = prompt(`"${project.name}" 서브폴더 이름:`);
+    if (name && name.trim()) {
+        const year = document.querySelector('.year-item.active')?.getAttribute('data-year');
+        if (!year) return;
+        const p = projectData[year]?.projects.find(pr => pr.name === project.name);
+        if (p) {
+            if (!p.subProjects) p.subProjects = [];
+            if (p.subProjects.includes(name.trim())) { alert('이미 존재하는 서브폴더입니다.'); return; }
+            p.subProjects.push(name.trim());
+            if (!p.products) p.products = { '_direct': [] };
+            p.products[name.trim()] = [];
+            loadProjectsForYear(year);
+            saveToStorage();
+        }
+    }
+}
+
+function addProductToSubProject(brandName, subName) {
+    const name = prompt(`"${subName}" 제품 이름:`);
+    if (name && name.trim()) {
+        const year = currentSelectedYear;
+        if (!year) return;
+        const brand = projectData[year]?.projects.find(p => p.name === brandName);
+        if (brand) {
+            if (!brand.products) brand.products = { '_direct': [] };
+            if (!brand.products[subName]) brand.products[subName] = [];
+            if (brand.products[subName].includes(name.trim())) { alert('이미 존재하는 제품입니다.'); return; }
+            brand.products[subName].push(name.trim());
+            loadProductsForSubProject(brandName, subName);
+            saveToStorage();
+        }
+    }
+}
+
+function loadProductsForBrand(brandName) {
+    const detail = document.getElementById('product-detail');
+    if (!detail) return;
+    detail.innerHTML = '';
+    const brand = projectData[currentSelectedYear]?.projects.find(p => p.name === brandName);
+    if (!brand?.products?.['_direct']?.length) {
+        detail.innerHTML = '<p class="empty-message">제품이 없습니다.</p>';
+        return;
+    }
+    brand.products['_direct'].forEach((prod, i) => {
+        const item = document.createElement('div');
+        item.className = 'product-list-item';
+        item.innerHTML = `<span class="product-icon">📦</span><span class="product-name-text">${prod}</span><button class="btn-delete-product">×</button>`;
+        item.addEventListener('click', function(e) {
+            if (!e.target.closest('.btn-delete-product')) showReleasedProductModal(prod);
+        });
+        item.querySelector('.btn-delete-product').addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (confirm(`"${prod}" 삭제?`)) {
+                brand.products['_direct'].splice(i, 1);
+                loadProductsForBrand(brandName);
+                saveToStorage();
+            }
+        });
+        detail.appendChild(item);
+    });
+}
+
+function loadProductsForSubProject(brandName, subName) {
+    const detail = document.getElementById('product-detail');
+    if (!detail) return;
+    detail.innerHTML = '';
+    const brand = projectData[currentSelectedYear]?.projects.find(p => p.name === brandName);
+    if (!brand?.products?.[subName]?.length) {
+        detail.innerHTML = '<p class="empty-message">제품이 없습니다.</p>';
+        return;
+    }
+    brand.products[subName].forEach((prod, i) => {
+        const item = document.createElement('div');
+        item.className = 'product-list-item';
+        item.innerHTML = `<span class="product-icon">📦</span><span class="product-name-text">${prod}</span><button class="btn-delete-product">×</button>`;
+        item.addEventListener('click', function(e) {
+            if (!e.target.closest('.btn-delete-product')) showReleasedProductModal(prod);
+        });
+        item.querySelector('.btn-delete-product').addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (confirm(`"${prod}" 삭제?`)) {
+                brand.products[subName].splice(i, 1);
+                loadProductsForSubProject(brandName, subName);
+                saveToStorage();
+            }
+        });
+        detail.appendChild(item);
+    });
+}
+
+function showReleasedProductModal(productName) {
+    const existingModal = document.getElementById('released-product-modal');
+    if (existingModal) existingModal.remove();
+    const files = releasedProductFiles[productName];
+    const modal = document.createElement('div');
+    modal.id = 'released-product-modal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 ${productName}</h3>
+                <div class="signature-label">제품 상세</div>
+                <button class="btn-close-modal">×</button>
+            </div>
+            <div class="modal-body">${files ? buildModalContent(files) : '<p class="empty-message">릴리즈된 파일이 없습니다.</p>'}</div>
+        </div>`;
+    modal.querySelector('.btn-close-modal').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
+function buildModalContent(files) {
+    let html = '';
+    if (files.projectInfo) {
+        html += `<div class="modal-section"><div class="modal-section-title">📌 프로젝트 정보</div>
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px;font-size:13px;line-height:1.8;">
+            <div><strong>브랜드:</strong> ${files.projectInfo.brand || '-'}</div>
+            <div><strong>담당자:</strong> ${files.projectInfo.manager || '-'}</div>
+            <div><strong>Gate:</strong> ${files.projectInfo.gate || '-'}</div></div></div>`;
+    }
+    if (files.reports && files.reports.length) {
+        html += `<div class="modal-section"><div class="modal-section-title">📄 보고서</div>`;
+        files.reports.forEach(r => {
+            if (r.document) {
+                const badge = r.docType ? `<span class="doc-type-badge ${r.docType.toLowerCase()}">${r.docType}</span>` : '';
+                html += `<div class="released-file-item"><span class="file-icon">📄</span>
+                    <div class="file-details"><div class="file-title">${r.document} ${badge}</div>
+                    <div class="file-meta"><span>📅 ${r.reportDate || '-'}</span></div></div>
+                    <button class="btn-download">다운로드</button></div>`;
+            }
+        });
+        html += '</div>';
+    }
+    return html || '<p class="empty-message">정보가 없습니다.</p>';
+}
+
+function initOngoingTableUpload() {
+    const container = document.getElementById('ongoing-content');
+    if (container) {
+        container.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-upload-doc-table') && !e.target.disabled) {
+                const cell = e.target.closest('.doc-upload-cell');
+                if (cell) handleTableDocUpload(cell);
+            }
+            if (e.target.classList.contains('btn-delete-doc-table')) {
+                const cell = e.target.closest('.doc-upload-cell');
+                if (cell) handleTableDocDelete(cell);
+            }
+        });
+    }
+}
+
+function handleTableDocUpload(cell) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.xlsx,.ppt,.pptx';
+    input.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            cell.dataset.fileName = file.name;
+            const fileNameSpan = cell.querySelector('.doc-file-name');
+            if (fileNameSpan) fileNameSpan.textContent = file.name;
+            const btn = cell.querySelector('.btn-upload-doc-table');
+            if (btn) { btn.textContent = '✔ 완료'; btn.classList.add('uploaded'); }
+            const delBtn = cell.querySelector('.btn-delete-doc-table');
+            if (delBtn) delBtn.style.display = 'flex';
+        }
+    });
+    input.click();
+}
+
+function handleTableDocDelete(cell) {
+    if (confirm('파일을 삭제하시겠습니까?')) {
+        delete cell.dataset.fileName;
+        const fileNameSpan = cell.querySelector('.doc-file-name');
+        if (fileNameSpan) fileNameSpan.textContent = '';
+        const btn = cell.querySelector('.btn-upload-doc-table');
+        if (btn) { btn.textContent = '파일 선택'; btn.classList.remove('uploaded'); }
+        const delBtn = cell.querySelector('.btn-delete-doc-table');
+        if (delBtn) delBtn.style.display = 'none';
+    }
+}
+
+function initSaveButton() {
+    const btn = document.getElementById('btn-save');
+    if (btn) btn.addEventListener('click', saveOngoingProject);
+}
+
+function saveOngoingProject() {
+    const brand = document.getElementById('ongoing-brand')?.value || '';
+    const product = document.getElementById('ongoing-product')?.value || '';
+    const project = document.getElementById('ongoing-project')?.value || '';
+    const gate = document.getElementById('ongoing-gate')?.value || '';
+    const year = document.getElementById('ongoing-year')?.value || '';
+    const tbd = document.getElementById('ongoing-tbd')?.checked || false;
+    const manager = document.getElementById('ongoing-manager')?.value || '';
+
+    if (!brand || !product || !project || !gate || (!year && !tbd)) {
+        alert('필수 항목을 입력하세요.\n(브랜드, 제품, 프로젝트명, Gate, 일정 또는 TBD)');
+        return;
+    }
+
+    const reports = [];
+    document.querySelectorAll('#report-table-body tr').forEach(row => {
+        const dateInput = row.querySelector('input[type="date"]');
+        const date = dateInput ? dateInput.value : '';
+        const cell = row.querySelector('.doc-upload-cell');
+        const doc = cell?.dataset.fileName || '';
+        const typeSelect = row.querySelector('.doc-type-select');
+        const type = typeSelect ? typeSelect.value : '';
+        const noteInput = row.querySelector('.table-input[placeholder="회의 메모"]');
+        const note = noteInput ? noteInput.value : '';
+        if (date || doc || type || note) reports.push({ reportDate: date, document: doc, docType: type, meetingNote: note });
+    });
+
+    const signDate = document.getElementById('decision-date')?.value || '';
+    const decCell = document.getElementById('decision-upload-cell');
+    const decDoc = decCell?.dataset.fileName || '';
+    
+    // ★ Holding 데이터 수집
+    const holdingActive = document.getElementById('holding-toggle')?.checked || false;
+    const holdStatus = holdingActive ? (document.getElementById('holding-select')?.value || '') : '';
+    const holdReason = holdingActive ? (document.getElementById('holding-reason')?.value || '') : '';
+
+    historyRecords.push({
+        id: historyRecords.length + 1,
+        brand, product, project, gate, year, tbd, manager, reports,
+        signatureDate: signDate, decisionDocument: decDoc,
+        holdingActive: holdingActive,
+        holdingStatus: holdStatus, holdingReason: holdReason, released: false
+    });
+
+    updateHistoryTable();
+    saveToStorage();
+    alert('저장 완료!');
+    if (confirm('입력 폼을 초기화하시겠습니까?')) clearOngoingForm();
+}
+
+function updateHistoryTable() {
+    const tbody = document.getElementById('history-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    if (!historyRecords.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="19" style="text-align:center;padding:40px;color:#999;">데이터 없음</td></tr>';
+        return;
+    }
+    
+    historyRecords.forEach(rec => {
+        const tbdDisp = rec.tbd ? '⏳ TBD' : '-';
+        const yearDisp = rec.tbd ? '<span style="color:#FF9800;font-weight:bold;">TBD</span>' : (rec.year || '-');
+        const releaseBtn = rec.gate === 'Closure' 
+            ? (rec.released 
+                ? '<button class="btn-release released" disabled>✅ 릴리즈됨</button>' 
+                : `<button class="btn-release" onclick="releaseProject(${rec.id})">🚀 릴리즈</button>`) 
+            : '-';
+        
+        // ★ Holding 배지
+        const holdingBadge = rec.holdingActive 
+            ? '<span class="holding-badge holding-on">⚠️ 보류</span>' 
+            : '<span class="holding-badge holding-off">-</span>';
+        const holdingCellClass = rec.holdingActive ? 'holding-active-cell' : '';
+
+        if (rec.reports && rec.reports.length) {
+            rec.reports.forEach((rpt, i) => {
+                const badge = rpt.docType ? `<span class="doc-type-badge ${rpt.docType.toLowerCase()}">${rpt.docType}</span>` : '-';
+                const cellClass = rpt.docType ? `doc-type-cell type-${rpt.docType.toLowerCase()}` : '';
+                const row = document.createElement('tr');
+                
+                if (i === 0) {
+                    row.innerHTML = `
+                        <td rowspan="${rec.reports.length}">${rec.id}</td>
+                        <td rowspan="${rec.reports.length}">${rec.brand}</td>
+                        <td rowspan="${rec.reports.length}">${rec.product}</td>
+                        <td rowspan="${rec.reports.length}">${rec.project}</td>
+                        <td rowspan="${rec.reports.length}" class="manager-cell">👤 ${rec.manager||'-'}</td>
+                        <td rowspan="${rec.reports.length}">${rec.gate}</td>
+                        <td rowspan="${rec.reports.length}">${yearDisp}</td>
+                        <td rowspan="${rec.reports.length}">${tbdDisp}</td>
+                        <td>${rpt.reportDate||'-'}</td>
+                        <td>${rpt.document ? `<span class="doc-link">📎 ${rpt.document}</span>` : '-'}</td>
+                        <td class="${cellClass}">${badge}</td>
+                        <td>${rpt.meetingNote||'-'}</td>
+                        <td rowspan="${rec.reports.length}">${rec.signatureDate||'-'}</td>
+                        <td rowspan="${rec.reports.length}" class="${holdingCellClass}">${holdingBadge}</td>
+                        <td rowspan="${rec.reports.length}" class="${holdingCellClass}">${rec.holdingStatus||'-'}</td>
+                        <td rowspan="${rec.reports.length}" class="${holdingCellClass}">${rec.holdingReason||'-'}</td>
+                        <td rowspan="${rec.reports.length}">${releaseBtn}</td>
+                        <td rowspan="${rec.reports.length}"><button class="btn-edit-history" onclick="editHistoryRecord(${rec.id})">✏ 편집</button></td>
+                        <td rowspan="${rec.reports.length}"><button class="btn-delete-history" onclick="deleteHistoryRecord(${rec.id})">🗑 삭제</button></td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td>${rpt.reportDate||'-'}</td>
+                        <td>${rpt.document ? `<span class="doc-link">📎 ${rpt.document}</span>` : '-'}</td>
+                        <td class="${cellClass}">${badge}</td>
+                        <td>${rpt.meetingNote||'-'}</td>
+                    `;
+                }
+                tbody.appendChild(row);
+            });
+        } else {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${rec.id}</td><td>${rec.brand}</td><td>${rec.product}</td><td>${rec.project}</td>
+                <td class="manager-cell">👤 ${rec.manager||'-'}</td><td>${rec.gate}</td><td>${yearDisp}</td><td>${tbdDisp}</td>
+                <td>-</td><td>-</td><td>-</td><td>-</td>
+                <td>${rec.signatureDate||'-'}</td>
+                <td class="${holdingCellClass}">${holdingBadge}</td>
+                <td class="${holdingCellClass}">${rec.holdingStatus||'-'}</td>
+                <td class="${holdingCellClass}">${rec.holdingReason||'-'}</td>
+                <td>${releaseBtn}</td>
+                <td><button class="btn-edit-history" onclick="editHistoryRecord(${rec.id})">✏ 편집</button></td>
+                <td><button class="btn-delete-history" onclick="deleteHistoryRecord(${rec.id})">🗑 삭제</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+    });
+}
+
+function releaseProject(id) {
+    const rec = historyRecords.find(r => r.id === id);
+    if (!rec) { alert('레코드를 찾을 수 없습니다.'); return; }
+    if (rec.gate !== 'Closure') { alert('Gate가 "Closure"인 경우에만 릴리즈 가능합니다.'); return; }
+    if (rec.tbd || !rec.year) { alert('일정이 확정되어야 릴리즈 가능합니다. (TBD 해제 필요)'); return; }
+    
+    if (confirm(`"${rec.product}" 을(를) ARCHIVE로 릴리즈하시겠습니까?`)) {
+        const yr = new Date(rec.year).getFullYear().toString();
+        if (!projectData[yr]) { projectData[yr] = { projects: [] }; initYearListUI(); }
+        let brand = projectData[yr].projects.find(p => p.name === rec.brand);
+        if (!brand) {
+            brand = { name: rec.brand, subProjects: [], products: { '_direct': [] } };
+            projectData[yr].projects.push(brand);
+        }
+        if (!brand.products) brand.products = { '_direct': [] };
+        if (!brand.products['_direct']) brand.products['_direct'] = [];
+        if (!brand.products['_direct'].includes(rec.product)) brand.products['_direct'].push(rec.product);
+        
+        releasedProductFiles[rec.product] = {
+            projectInfo: { brand: rec.brand, manager: rec.manager, gate: rec.gate },
+            reports: rec.reports || []
+        };
+        
+        rec.released = true;
+        updateHistoryTable();
+        updateBrandOptions();
+        saveToStorage();
+        alert(`"${rec.product}" 이(가) ${yr}년 ARCHIVE로 릴리즈되었습니다!`);
+    }
+}
+
+function deleteHistoryRecord(id) {
+    if (confirm('정말 삭제하시겠습니까?')) {
+        const i = historyRecords.findIndex(r => r.id === id);
+        if (i !== -1) {
+            historyRecords.splice(i, 1);
+            historyRecords.forEach((r, idx) => r.id = idx + 1);
+            updateHistoryTable();
+            saveToStorage();
+        }
+    }
+}
+
+function initDeleteAllButton() {
+    const btn = document.getElementById('btn-delete-all');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            if (!historyRecords.length) { alert('삭제할 데이터가 없습니다.'); return; }
+            if (confirm('전체 History를 삭제하시겠습니까?\n(ARCHIVE 데이터는 유지됩니다)')) {
+                historyRecords.length = 0;
+                updateHistoryTable();
+                saveToStorage();
+            }
+        });
+    }
+}
+
+function clearOngoingForm() {
+    ['ongoing-brand', 'ongoing-gate'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    ['ongoing-product', 'ongoing-project', 'ongoing-year', 'ongoing-manager'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    
+    const tbdCheckbox = document.getElementById('ongoing-tbd');
+    if (tbdCheckbox) tbdCheckbox.checked = false;
+    toggleYearInput(false);
+
+    const tbody = document.getElementById('report-table-body');
+    if (tbody) {
+        tbody.innerHTML = `<tr>
+            <td><input type="date" class="table-input"></td>
+            <td><div class="doc-upload-cell"><button class="btn-upload-doc-table">파일 선택</button><span class="doc-file-name"></span><button class="btn-delete-doc-table" style="display:none;">×</button></div></td>
+            <td><select class="doc-type-select"><option value="">선택</option><option value="Status">Status</option><option value="Go">Go</option></select></td>
+            <td><input type="text" class="table-input" placeholder="회의 메모"></td>
+            <td><button class="btn-delete-row" onclick="deleteReportRow(this)">×</button></td>
+        </tr>`;
+    }
+
+    const decisionDate = document.getElementById('decision-date');
+    if (decisionDate) decisionDate.value = '';
+    const decCell = document.getElementById('decision-upload-cell');
+    if (decCell) {
+        delete decCell.dataset.fileName;
+        const fileNameSpan = decCell.querySelector('.doc-file-name');
+        if (fileNameSpan) fileNameSpan.textContent = '';
+        const btn = decCell.querySelector('.btn-upload-doc-table');
+        if (btn) { btn.textContent = '파일 선택'; btn.classList.remove('uploaded'); }
+        const delBtn = decCell.querySelector('.btn-delete-doc-table');
+        if (delBtn) delBtn.style.display = 'none';
+    }
+    
+    // ★ Holding 초기화
+    const holdingToggle = document.getElementById('holding-toggle');
+    if (holdingToggle) holdingToggle.checked = false;
+    toggleHoldingSection(false);
+    
+    checkDecisionSectionStatus();
+}
+
+function initExportButton() {
+    const btn = document.getElementById('btn-export-excel');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            if (!historyRecords.length) { alert('내보낼 데이터가 없습니다.'); return; }
+            
+            let csv = '\uFEFF번호,브랜드,제품,프로젝트,담당자,Gate,일정,TBD,날짜,문서,유형,비고,서명일,보류여부,보류상태,보류사유\n';
+            
+            historyRecords.forEach(r => {
+                const yr = r.tbd ? 'TBD' : (r.year || '-');
+                const holdActive = r.holdingActive ? 'Y' : 'N';
+                if (r.reports && r.reports.length) {
+                    r.reports.forEach((rpt, i) => {
+                        if (i === 0) {
+                            csv += `${r.id},"${r.brand}","${r.product}","${r.project}","${r.manager||''}","${r.gate}","${yr}","${r.tbd?'Y':'N'}","${rpt.reportDate||'-'}","${rpt.document||'-'}","${rpt.docType||'-'}","${rpt.meetingNote||'-'}","${r.signatureDate||'-'}","${holdActive}","${r.holdingStatus||'-'}","${r.holdingReason||'-'}"\n`;
+                        } else {
+                            csv += `,,,,,,,,,"${rpt.reportDate||'-'}","${rpt.document||'-'}","${rpt.docType||'-'}","${rpt.meetingNote||'-'}",,,\n`;
+                        }
+                    });
+                } else {
+                    csv += `${r.id},"${r.brand}","${r.product}","${r.project}","${r.manager||''}","${r.gate}","${yr}","${r.tbd?'Y':'N'}","-","-","-","-","${r.signatureDate||'-'}","${holdActive}","${r.holdingStatus||'-'}","${r.holdingReason||'-'}"\n`;
+                }
+            });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+            link.download = `CODEV_History_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+        });
+    }
+}
+
+function addReportRow() {
+    const tbody = document.getElementById('report-table-body');
+    if (!tbody) return;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td><input type="date" class="table-input"></td>
+        <td><div class="doc-upload-cell"><button class="btn-upload-doc-table">파일 선택</button><span class="doc-file-name"></span><button class="btn-delete-doc-table" style="display:none;">×</button></div></td>
+        <td><select class="doc-type-select"><option value="">선택</option><option value="Status">Status</option><option value="Go">Go</option></select></td>
+        <td><input type="text" class="table-input" placeholder="회의 메모"></td>
+        <td><button class="btn-delete-row" onclick="deleteReportRow(this)">×</button></td>
+    `;
+    tbody.appendChild(row);
+    row.style.backgroundColor = '#e8f5e9';
+    setTimeout(() => { row.style.transition = 'background-color 0.5s'; row.style.backgroundColor = ''; }, 100);
+}
+
+function deleteReportRow(btn) {
+    const tbody = document.getElementById('report-table-body');
+    if (!tbody) return;
+    if (tbody.querySelectorAll('tr').length <= 1) { alert('최소 1개 행은 유지해야 합니다.'); return; }
+    if (confirm('행을 삭제하시겠습니까?')) {
+        const row = btn.closest('tr');
+        if (row) {
+            row.style.opacity = '0';
+            row.style.transition = 'opacity 0.3s';
+            setTimeout(() => { row.remove(); checkDecisionSectionStatus(); }, 300);
+        }
+    }
+}
+
+function initEditButtons() {
+    const updateBtn = document.getElementById('btn-update');
+    if (updateBtn) updateBtn.addEventListener('click', updateHistoryRecord);
+    const cancelBtn = document.getElementById('btn-cancel-edit');
+    if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
+}
+
+function editHistoryRecord(id) {
+    const rec = historyRecords.find(r => r.id === id);
+    if (!rec) return;
+
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const ongoingTab = document.querySelector('[data-tab="ongoing"]');
+    if (ongoingTab) ongoingTab.classList.add('active');
+    const ongoingContent = document.getElementById('ongoing-content');
+    if (ongoingContent) ongoingContent.classList.add('active');
+    const pageTitle = document.getElementById('page-title');
+    if (pageTitle) pageTitle.textContent = 'II. Ongoing Projects';
+
+    updateBrandOptions();
+
+    const brandSelect = document.getElementById('ongoing-brand');
+    if (brandSelect) brandSelect.value = rec.brand || '';
+    const productInput = document.getElementById('ongoing-product');
+    if (productInput) productInput.value = rec.product || '';
+    const projectInput = document.getElementById('ongoing-project');
+    if (projectInput) projectInput.value = rec.project || '';
+    const gateSelect = document.getElementById('ongoing-gate');
+    if (gateSelect) gateSelect.value = rec.gate || '';
+    const yearInput = document.getElementById('ongoing-year');
+    if (yearInput) yearInput.value = rec.year || '';
+    const tbdCheckbox = document.getElementById('ongoing-tbd');
+    if (tbdCheckbox) tbdCheckbox.checked = rec.tbd || false;
+    const managerInput = document.getElementById('ongoing-manager');
+    if (managerInput) managerInput.value = rec.manager || '';
+    toggleYearInput(rec.tbd);
+
+    const tbody = document.getElementById('report-table-body');
+    if (tbody) {
+        tbody.innerHTML = '';
+        if (rec.reports && rec.reports.length) {
+            rec.reports.forEach(rpt => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="date" class="table-input" value="${rpt.reportDate||''}"></td>
+                    <td><div class="doc-upload-cell" data-file-name="${rpt.document||''}">
+                        <button class="btn-upload-doc-table ${rpt.document?'uploaded':''}">${rpt.document?'✔ 완료':'파일 선택'}</button>
+                        <span class="doc-file-name">${rpt.document||''}</span>
+                        <button class="btn-delete-doc-table" style="display:${rpt.document?'flex':'none'};">×</button>
+                    </div></td>
+                    <td><select class="doc-type-select">
+                        <option value="">선택</option>
+                        <option value="Status" ${rpt.docType==='Status'?'selected':''}>Status</option>
+                        <option value="Go" ${rpt.docType==='Go'?'selected':''}>Go</option>
+                    </select></td>
+                    <td><input type="text" class="table-input" placeholder="회의 메모" value="${rpt.meetingNote||''}"></td>
+                    <td><button class="btn-delete-row" onclick="deleteReportRow(this)">×</button></td>
+                `;
+                const sel = row.querySelector('.doc-type-select');
+                if (sel) updateDocTypeSelectStyle(sel);
+                tbody.appendChild(row);
+            });
+        } else {
+            addReportRow();
+        }
+    }
+
+    checkDecisionSectionStatus();
+    
+    const decisionDate = document.getElementById('decision-date');
+    if (decisionDate) decisionDate.value = rec.signatureDate || '';
+    const decCell = document.getElementById('decision-upload-cell');
+    if (decCell && rec.decisionDocument) {
+        decCell.dataset.fileName = rec.decisionDocument;
+        const fileNameSpan = decCell.querySelector('.doc-file-name');
+        if (fileNameSpan) fileNameSpan.textContent = rec.decisionDocument;
+        const btn = decCell.querySelector('.btn-upload-doc-table');
+        if (btn) { btn.textContent = '✔ 완료'; btn.classList.add('uploaded'); }
+        const delBtn = decCell.querySelector('.btn-delete-doc-table');
+        if (delBtn) delBtn.style.display = 'flex';
+    }
+    
+    // ★ Holding 복원
+    const holdingToggle = document.getElementById('holding-toggle');
+    if (holdingToggle) {
+        holdingToggle.checked = rec.holdingActive || false;
+        toggleHoldingSection(rec.holdingActive || false);
+    }
+    
+    // 토글 후 값 설정 (약간의 딜레이)
+    setTimeout(() => {
+        const holdSelect = document.getElementById('holding-select');
+        if (holdSelect) holdSelect.value = rec.holdingStatus || '';
+        const holdInput = document.getElementById('holding-reason');
+        if (holdInput) holdInput.value = rec.holdingReason || '';
+    }, 50);
+
+    editingRecordId = id;
+    setEditMode(true);
+    showEditModeIndicator(rec);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setEditMode(on) {
+    const saveBtn = document.getElementById('btn-save');
+    const updateBtn = document.getElementById('btn-update');
+    const cancelBtn = document.getElementById('btn-cancel-edit');
+    if (saveBtn) saveBtn.style.display = on ? 'none' : 'inline-block';
+    if (updateBtn) updateBtn.style.display = on ? 'inline-block' : 'none';
+    if (cancelBtn) cancelBtn.style.display = on ? 'inline-block' : 'none';
+    if (!on) { editingRecordId = null; removeEditModeIndicator(); }
+}
+
+function showEditModeIndicator(rec) {
+    removeEditModeIndicator();
+    const div = document.createElement('div');
+    div.className = 'edit-mode-indicator';
+    div.id = 'edit-mode-indicator';
+    div.innerHTML = `<span class="icon">✏️</span><span class="text">편집 모드: [${rec.brand}] ${rec.project} (번호: ${rec.id})</span>`;
+    const panelTitle = document.querySelector('.ongoing-container .panel-title');
+    if (panelTitle) panelTitle.insertAdjacentElement('afterend', div);
+}
+
+function removeEditModeIndicator() {
+    const indicator = document.getElementById('edit-mode-indicator');
+    if (indicator) indicator.remove();
+}
+
+function updateHistoryRecord() {
+    if (!editingRecordId) return;
+    const idx = historyRecords.findIndex(r => r.id === editingRecordId);
+    if (idx === -1) return;
+
+    const reports = [];
+    document.querySelectorAll('#report-table-body tr').forEach(row => {
+        const dateInput = row.querySelector('input[type="date"]');
+        const date = dateInput ? dateInput.value : '';
+        const cell = row.querySelector('.doc-upload-cell');
+        const doc = cell?.dataset.fileName || '';
+        const typeSelect = row.querySelector('.doc-type-select');
+        const type = typeSelect ? typeSelect.value : '';
+        const noteInput = row.querySelector('.table-input[placeholder="회의 메모"]');
+        const note = noteInput ? noteInput.value : '';
+        reports.push({ reportDate: date, document: doc, docType: type, meetingNote: note });
+    });
+
+    // ★ Holding 데이터 수집
+    const holdingActive = document.getElementById('holding-toggle')?.checked || false;
+
+    historyRecords[idx] = {
+        ...historyRecords[idx],
+        brand: document.getElementById('ongoing-brand')?.value || '',
+        product: document.getElementById('ongoing-product')?.value || '',
+        project: document.getElementById('ongoing-project')?.value || '',
+        gate: document.getElementById('ongoing-gate')?.value || '',
+        year: document.getElementById('ongoing-year')?.value || '',
+        tbd: document.getElementById('ongoing-tbd')?.checked || false,
+        manager: document.getElementById('ongoing-manager')?.value || '',
+        reports,
+        signatureDate: document.getElementById('decision-date')?.value || '',
+        decisionDocument: document.getElementById('decision-upload-cell')?.dataset.fileName || '',
+        holdingActive: holdingActive,
+        holdingStatus: holdingActive ? (document.getElementById('holding-select')?.value || '') : '',
+        holdingReason: holdingActive ? (document.getElementById('holding-reason')?.value || '') : ''
+    };
+
+    updateHistoryTable();
+    saveToStorage();
+    setEditMode(false);
+    alert('수정 완료!');
+    if (confirm('입력 폼을 초기화하시겠습니까?')) clearOngoingForm();
+}
+
+function cancelEdit() {
+    if (confirm('편집을 취소하시겠습니까?\n변경사항이 저장되지 않습니다.')) {
+        setEditMode(false);
+        clearOngoingForm();
+    }
+}
+</script>
+</body>
+</html>

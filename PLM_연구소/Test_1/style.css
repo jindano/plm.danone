@@ -1,0 +1,1018 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Tab Navigation */
+.tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab {
+    padding: 12px 40px;
+    border: none;
+    background-color: #e8e8e8;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: normal;
+    color: #333;
+    position: relative;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    transition: all 0.3s ease;
+    clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
+    margin-right: 5px;
+}
+
+.tab:hover {
+    background-color: #d5d5d5;
+}
+
+.tab.active {
+    background-color: #8BC34A;
+    color: white;
+    font-weight: bold;
+    border-color: #8BC34A;
+}
+
+/* Content Area */
+.content-area {
+    display: none;
+    border: 2px solid #333;
+    border-top: none;
+    min-height: 600px;
+}
+
+.content-area.active {
+    display: flex;
+}
+
+/* ARCHIVE Tab - 3 Panel Layout */
+#archive-content {
+    display: none;
+}
+
+#archive-content.active {
+    display: flex;
+}
+
+#archive-content .left-panel {
+    width: 220px;
+}
+
+#archive-content .middle-panel {
+    width: 280px;
+    border-right: 2px solid #333;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+#archive-content .right-panel {
+    flex: 1;
+}
+
+/* Ongoing Projects Tab */
+#ongoing-content,
+#history-content {
+    padding: 30px;
+    background-color: white;
+}
+
+.ongoing-container,
+.history-container {
+    max-width: 1200px;
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-size: 14px;
+}
+
+/* Tab Content Management */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* Panel Titles */
+.panel-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #8BC34A;
+}
+
+.panel-header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.panel-header-with-button .panel-title {
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.btn-add-folder {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+.btn-add-folder:hover {
+    background-color: #8BC34A;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-add-folder:active {
+    transform: scale(0.95);
+}
+
+.icon-plus {
+    display: block;
+    line-height: 1;
+}
+
+/* Left Panel - Year List */
+.left-panel {
+    width: 280px;
+    border-right: 2px solid #333;
+    padding: 20px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+}
+
+.year-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.year-item {
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.year-item:hover {
+    border-color: #8BC34A;
+    box-shadow: 0 2px 8px rgba(139, 195, 74, 0.2);
+    transform: translateX(3px);
+}
+
+.year-item.active {
+    border: 2px solid #8BC34A;
+    background-color: #f1f8e9;
+}
+
+.year-number {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.year-info {
+    font-size: 13px;
+    color: #666;
+}
+
+.toggle-icon {
+    display: inline-block;
+    width: 16px;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.footer-note {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    font-size: 14px;
+    color: #666;
+    text-align: left;
+}
+
+/* Right Panel - Product Tree */
+.right-panel {
+    flex: 1;
+    padding: 20px 30px;
+    background-color: white;
+    overflow-y: auto;
+}
+
+/* Middle Panel - Project Tree */
+.project-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.project-item-main {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.project-main-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 15px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.project-main-header:hover {
+    background-color: #e8f5e9;
+}
+
+.project-main-header.active {
+    background-color: #8BC34A;
+    color: white;
+}
+
+.project-main-name {
+    font-size: 15px;
+    font-weight: bold;
+    flex: 1;
+}
+
+.btn-edit-brand {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid #FF9800;
+    background-color: white;
+    color: #FF9800;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    opacity: 0;
+}
+
+.project-main-header:hover .btn-edit-brand {
+    opacity: 1;
+}
+
+.btn-edit-brand:hover {
+    background-color: #FF9800;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-edit-brand:active {
+    transform: scale(0.9);
+}
+
+.project-main-header.active .btn-edit-brand {
+    border-color: white;
+    color: white;
+    background-color: transparent;
+    opacity: 1;
+}
+
+.project-main-header.active .btn-edit-brand:hover {
+    background-color: white;
+    color: #FF9800;
+}
+
+.btn-add-subfolder {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.btn-add-subfolder:hover {
+    background-color: #8BC34A;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-add-subfolder:active {
+    transform: scale(0.9);
+}
+
+.project-main-header.active .btn-add-subfolder {
+    border-color: white;
+    color: white;
+    background-color: transparent;
+}
+
+.project-main-header.active .btn-add-subfolder:hover {
+    background-color: white;
+    color: #8BC34A;
+}
+
+.project-main-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: white;
+}
+
+.project-main-content.expanded {
+    max-height: 300px;
+}
+
+.sub-project-item {
+    padding: 10px 15px 10px 35px;
+    border-top: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.sub-project-item:hover {
+    background-color: #f9f9f9;
+}
+
+.sub-project-item.active {
+    background-color: #e8f5e9;
+    border-left: 3px solid #8BC34A;
+}
+
+.sub-project-name {
+    flex: 1;
+    font-size: 14px;
+    color: #555;
+}
+
+.btn-edit-subfolder {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #FF9800;
+    background-color: white;
+    color: #FF9800;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 11px;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    opacity: 0;
+}
+
+.sub-project-item:hover .btn-edit-subfolder {
+    opacity: 1;
+}
+
+.btn-edit-subfolder:hover {
+    background-color: #FF9800;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-edit-subfolder:active {
+    transform: scale(0.95);
+}
+
+.sub-project-item.active .btn-edit-subfolder {
+    border-color: white;
+    color: white;
+    opacity: 1;
+}
+
+.sub-project-item.active .btn-edit-subfolder:hover {
+    background-color: white;
+    color: #FF9800;
+}
+
+.btn-add-product-sub {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #8BC34A;
+    background-color: white;
+    color: #8BC34A;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    opacity: 0;
+}
+
+.sub-project-item:hover .btn-add-product-sub {
+    opacity: 1;
+}
+
+.btn-add-product-sub:hover {
+    background-color: #8BC34A;
+    color: white;
+    transform: scale(1.15);
+}
+
+.btn-add-product-sub:active {
+    transform: scale(0.95);
+}
+
+.sub-project-item.active .btn-add-product-sub {
+    opacity: 1;
+}
+
+/* Product Detail Area */
+.product-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 18px;
+    background-color: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.product-list-item:hover {
+    background-color: #e8f5e9;
+    border-color: #8BC34A;
+    transform: translateX(5px);
+}
+
+.product-list-item.active {
+    background-color: #e8f5e9;
+    border-color: #8BC34A;
+    border-width: 2px;
+    box-shadow: 0 2px 8px rgba(139, 195, 74, 0.3);
+}
+
+.product-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.product-name-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.product-list-item.active .product-name-text {
+    color: #558B2F;
+}
+
+.btn-delete-product {
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid #f44336;
+    background-color: white;
+    color: #f44336;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    opacity: 0;
+}
+
+.product-list-item:hover .btn-delete-product {
+    opacity: 1;
+}
+
+.btn-delete-product:hover {
+    background-color: #f44336;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-delete-product:active {
+    transform: scale(0.9);
+}
+
+.product-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Product Items */
+.product-item {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.product-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 15px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+.product-header:hover {
+    background-color: #e8f5e9;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.folder-icon {
+    font-size: 18px;
+}
+
+.product-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    background-color: white;
+}
+
+.product-content.expanded {
+    max-height: 2000px;
+}
+
+/* Stage Items */
+.stage-item {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.stage-item:last-child {
+    border-bottom: none;
+}
+
+.stage-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    user-select: none;
+    background-color: #fafafa;
+    transition: background-color 0.2s ease;
+}
+
+.stage-header:hover {
+    background-color: #f0f0f0;
+}
+
+.stage-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+}
+
+.stage-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 20px 0 45px;
+}
+
+.stage-content.expanded {
+    max-height: 300px;
+    padding: 10px 20px 10px 45px;
+}
+
+/* Document Items */
+.doc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin: 4px 0;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+}
+
+.doc-item:hover {
+    background-color: #f0f0f0;
+    border-color: #8BC34A;
+    transform: translateX(3px);
+}
+
+.doc-item.confirmed {
+    background-color: #fff;
+    border: 1px solid #8BC34A;
+    border-left: 3px solid #8BC34A;
+}
+
+.doc-icon {
+    font-size: 14px;
+}
+
+/* ========== ONGOING PROJECTS TAB STYLES ========== */
+.ongoing-container {
+    width: 100%;
+    padding: 30px;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Filter Form */
+.filter-form {
+    margin-bottom: 30px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-input,
+.form-select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: #8BC34A;
+}
+
+.form-select {
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Button Row */
+.button-row {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add {
+    background-color: #A8D5FF;
+    color: #333;
+}
+
+.btn-add:hover {
+    background-color: #8BC3FF;
+}
+
+.btn-delete {
+    background-color: #C8C8D2;
+    color: #333;
+}
+
+.btn-delete:hover {
+    background-color: #B0B0C0;
+}
+
+/* Upload Table */
+.upload-table-container {
+    margin-bottom: 30px;
+    overflow-x: auto;
+}
+
+.upload-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.upload-table th,
+.upload-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.upload-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.upload-table td {
+    font-size: 14px;
+}
+
+.table-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.table-input:focus {
+    border-color: #8BC34A;
+}
+
+.btn-register {
+    padding: 6px 16px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #f0f0f0;
+    border-color: #8BC34A;
+}
+
+.doc-upload {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+}
+
+/* Request Decision Section */
+.request-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fafafa;
+}
+
+.request-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.request-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.request-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 180px;
+}
+
+.request-group.flex-grow {
+    flex-grow: 1;
+}
+
+.request-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.doc-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #8BC34A;
+    border-left: 3px solid #8BC34A;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* Project Holding Section */
+.holding-section {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fafafa;
+}
+
+.holding-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.holding-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.holding-row label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    min-width: 60px;
+}
+
+.holding-dropdown {
+    min-width: 200px;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+/* History Tab */
+.history-container {
+    width: 100%;
+    padding: 30px;
+    text-align: center;
+}
+
+.placeholder-text {
+    font-size: 16px;
+    color: #999;
+    margin-top: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    #archive-content.active {
+        flex-direction: column;
+    }
+
+    #archive-content .left-panel,
+    #archive-content .middle-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #333;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-area {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #333;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .request-row,
+    .holding-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+    }
+    
+    .bottom-section {
+        flex-direction: column;
+    }
+}
+
